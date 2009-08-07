@@ -80,7 +80,7 @@ def parse(str)
 		when /\A\\\n/
 		when /\A#.*\n/
 		else
-			raise "Unknown character"
+			raise "Unknown character "+ str
 		end
 		str=$'
 	end
@@ -91,3 +91,4 @@ end
 parse(" if else  if else () 4354 5 34 5.5").each do |t|
     puts t[0]
 end
+
