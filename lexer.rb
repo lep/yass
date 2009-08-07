@@ -44,6 +44,8 @@ def parse(str)
 			@q.push [:SCOPE, nil] #is nil needed?
 		when /\Afun/
 			@q.push [:FUN, nil]
+		when /\Aarray/
+			@q.push [:ARRAY, nil]
 		when /\Aif/
 			@q.push [:IF, nil]
 		when /\Aelseif/
