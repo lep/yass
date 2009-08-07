@@ -21,12 +21,12 @@ end
 def parse(str)
 	q=[]
 	until str.empty?
+	#puts "str= "+str
 		case str
 		#ignored
 		when /\A[ \t]/
 		when /\A\\\n/
 		when /\A#.*\n/
-
 		when /\A\d+\.\d+/, /\A\d+\./, /\A\.\d+/
 			q.push [:FLOAT, $&.to_f]
 		when /\A\d+/
@@ -64,24 +64,26 @@ def parse(str)
 		when /\Areturn/
 			q.push [:RETURN, nil]
 		when /\Aand/
-			q.push[:AND, nil]
+			q.push [:AND, nil]
 		when /\Aor/
 			q.push [:OR, nil]
 		when /\Anot/
 			q.push [:NOT, nil]
-		when /\A[a-zA-Z_?!]([a-zA-Z0-9_?!])*/
-			q.push [:NAME, $&]
-		when /\A(::)?[a-zA-Z_?!]([a-zA-Z0-9_?!])*
-				(::[a-zA-Z_?!]([a-zA-Z0-9_?!])*)*/x
-			q.push [:IDENTIFER, $&]
-		when /\A(!=)|(<=)|(>=)|(==)|[-+*\/()\[\],:=<>]/
+		when /^(==|>=|!=|==)/
 			q.push [$&, $&]
+		when /^[+\-*\/()\[\],:=<>]/
+			q.push [$&, $&]
+		when /\A([a-zA-Z_?$%&§])([a-zA-Z0-9_?§$%&])*/
+			q.push [:NAME, $&]
+		#when /\A(::)?[a-zA-Z_?!]([a-zA-Z0-9_?!])*
+		#		(::[a-zA-Z_?!]([a-zA-Z0-9_?!])*)*/x
+		#	q.push [:IDENTIFER, $&]
 		when /\A;/
 			q.push [:END, nil]
-		when /\A\n/
+		when /^\n/
 			q.push [:EOL, nil]
 		else
-			raise "Unknown character "+ str
+			raise "Unknown character "
 		end
 		str=$'
 	end
@@ -89,7 +91,7 @@ def parse(str)
 end
 
 #TODO: find out why it only finds 1 name and if else not
-parse("if else  if else () 4354 5 34 5.5").each do |t|
+parse("\nif(a!=b)").each do |t|
     puts t[0]
 end
 
