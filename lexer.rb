@@ -87,3 +87,7 @@ def parse(str)
 	return @q;
 end
 
+
+parse("asdf if else  if else ()").each do |t|
+    puts t[0]
+end
