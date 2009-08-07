@@ -22,17 +22,15 @@ def parse(str)
 	@q=[]
 	until str.empty?
 		case str
-		when /\A\d+\.\d+/
-		when /\A\d+\./
-		when /\A\.\d+/
+		when /\A\d+\.\d+/, /\A\d+\./, /\A\.\d+/
 			@q.push [:FLOAT, $&.to_f]
 		when /\A\d+/
 			@q.push [:INT, $&.to_i]
-		when /0x[a-fA-F0-9]+/
+		when /\A0x[a-fA-F0-9]+/
 			@q.push [:INT, $&.hex]
-		when /0o([0-7])+/
+		when /\A0o([0-7])+/
 			@q.push [:INT, $1.oct]
-		when /0b([01])+/
+		when /\A0b([01])+/
 			@q.push [:INT, $1.bin]
 		when /\A[']([\x01-\x26\x29-\x5B\x5D-\x7F]
 		(	[\x01-\x26\x29-\x5B\x5D-\x7F][\x01-\x26\x29-\x5B\x5D-\x7F]
@@ -82,10 +80,14 @@ def parse(str)
 		when /\A\\\n/
 		when /\A#.*\n/
 		else
-			raise "Unknown character"
+			raise "Unknown character "+ str
 		end
 		str=$'
 	end
 	return @q;
+end
+
+parse(" if else  if else () 4354 5 34 5.5").each do |t|
+	print t[0], "\n"
 end
 
