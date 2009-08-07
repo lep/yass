@@ -22,9 +22,7 @@ def parse(str)
 	q=[]
 	until str.empty?
 		case str
-		when /\A\d+\.\d+/
-		when /\A\d+\./
-		when /\A\.\d+/
+		when /\A\d+\.\d+/, /\A\d+\./, /\A\.\d+/
 			q.push [:FLOAT, $&.to_f]
 		when /\A\d+/
 			q.push [:INT, $&.to_i]
@@ -90,6 +88,6 @@ def parse(str)
 end
 
 #TODO: find out why it only finds 1 name and if else not
-parse(" if else  if else ()").each do |t|
+parse(" if else  if else () 4354 5 34 5.5").each do |t|
     puts t[0]
 end
