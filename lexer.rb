@@ -91,8 +91,7 @@ def parse(str)
 end
 
 #TODO: find out why it only finds 1 name and if else not
-parse("else\na(1, 2, 3);;").each do |t|
-
+parse("\nif(a!=b)").each do |t|
     puts t[0]
 end
 
