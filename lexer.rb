@@ -19,64 +19,64 @@ class String
 end
 
 def parse(str)
-	@q=[]
+	q=[]
 	until str.empty?
 		case str
 		when /\A\d+\.\d+/
 		when /\A\d+\./
 		when /\A\.\d+/
-			@q.push [:FLOAT, $&.to_f]
+			q.push [:FLOAT, $&.to_f]
 		when /\A\d+/
-			@q.push [:INT, $&.to_i]
+			q.push [:INT, $&.to_i]
 		when /0x[a-fA-F0-9]+/
-			@q.push [:INT, $&.hex]
+			q.push [:INT, $&.hex]
 		when /0o([0-7])+/
-			@q.push [:INT, $1.oct]
+			q.push [:INT, $1.oct]
 		when /0b([01])+/
-			@q.push [:INT, $1.bin]
+			q.push [:INT, $1.bin]
 		when /\A[']([\x01-\x26\x29-\x5B\x5D-\x7F]
 		(	[\x01-\x26\x29-\x5B\x5D-\x7F][\x01-\x26\x29-\x5B\x5D-\x7F]
 			[\x01-\x26\x29-\x5B\x5D-\x7F])?)[']/x
-			@q.push [:INT, $1.rawcode]
+			q.push [:INT, $1.rawcode]
 		when /\A("[^"]")/ #TODO: fix me
-			@q.push [:STRING, $1]
+			q.push [:STRING, $1]
 		when /\Ascope/
-			@q.push [:SCOPE, nil] #is nil needed?
+			q.push [:SCOPE, nil] #is nil needed?
 		when /\Afun/
-			@q.push [:FUN, nil]
+			q.push [:FUN, nil]
 		when /\Aarray/
-			@q.push [:ARRAY, nil]
+			q.push [:ARRAY, nil]
 		when /\Aif/
-			@q.push [:IF, nil]
+			q.push [:IF, nil]
 		when /\Aelseif/
-			@q.push [:ELSEIF, nil]
+			q.push [:ELSEIF, nil]
 		when /\Aelse/
-			@q.push [:ELSE, nil]
+			q.push [:ELSE, nil]
 		when /\Aloop/
-			@q.push [:LOOP, nil]
+			q.push [:LOOP, nil]
 		when /\Aexitwhen/
-			@q.push [:EXITWHEN, nil]
+			q.push [:EXITWHEN, nil]
 		when /\Abreak/
-			@q.push [:BREAK, nil]
+			q.push [:BREAK, nil]
 		when /\Areturn/
-			@q.push [:RETURN, nil]
+			q.push [:RETURN, nil]
 		when /\Aand/
-			@q.push[:AND, nil]
+			q.push[:AND, nil]
 		when /\Aor/
-			@q.push [:OR, nil]
+			q.push [:OR, nil]
 		when /\Anot/
-			@q.push [:NOT, nil]
+			q.push [:NOT, nil]
 		when /\A[a-zA-Z_?!]([a-zA-Z0-9_?!])*/
-			@q.push [:NAME, $&]
+			q.push [:NAME, $&]
 		when /\A(::)?[a-zA-Z_?!]([a-zA-Z0-9_?!])*
 				(::[a-zA-Z_?!]([a-zA-Z0-9_?!])*)*/x
-			@q.push [:IDENTIFER, $&]
+			q.push [:IDENTIFER, $&]
 		when /\A(!=)|(<=)|(>=)|(==)|[-+*\/()\[\],:=<>]/
-			@q.push [$&, $&]
+			q.push [$&, $&]
 		when /\A;/
-			@q.push [:END, nil]
+			q.push [:END, nil]
 		when /\A\n/
-			@q.push [:EOL, nil]
+			q.push [:EOL, nil]
 		#ignored
 		when /\A[ \t]/
 		when /\A\\\n/
@@ -86,10 +86,10 @@ def parse(str)
 		end
 		str=$'
 	end
-	return @q;
+	return q;
 end
 
 #TODO: find out why it only finds 1 name and if else not
-parse("asdf if else  if else ()").each do |t|
+parse(" if else  if else ()").each do |t|
     puts t[0]
 end
