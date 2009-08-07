@@ -89,7 +89,7 @@ def parse(str)
 end
 
 #TODO: find out why it only finds 1 name and if else not
-parse("if else  if else ()  sd d sa4354 5 34 5.5").each do |t|
+parse("else\na(1, 2, 3);;").each do |t|
     puts t[0]
 end
 
