@@ -1,0 +1,7 @@
+
+int a=5,b=10,d=rand(9, 10),c=rand(8,10)
+if(a!=b)
+	if(c==d)
+		A(B(C(3), 9), 5.5)
+		print(I2S(a+b+c+d));;
+
