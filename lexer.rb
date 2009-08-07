@@ -22,6 +22,11 @@ def parse(str)
 	q=[]
 	until str.empty?
 		case str
+		#ignored
+		when /\A[ \t]/
+		when /\A\\\n/
+		when /\A#.*\n/
+
 		when /\A\d+\.\d+/, /\A\d+\./, /\A\.\d+/
 			q.push [:FLOAT, $&.to_f]
 		when /\A\d+/
@@ -75,10 +80,6 @@ def parse(str)
 			q.push [:END, nil]
 		when /\A\n/
 			q.push [:EOL, nil]
-		#ignored
-		when /\A[ \t]/
-		when /\A\\\n/
-		when /\A#.*\n/
 		else
 			raise "Unknown character "+ str
 		end
@@ -88,7 +89,7 @@ def parse(str)
 end
 
 #TODO: find out why it only finds 1 name and if else not
-parse(" if else  if else () 4354 5 34 5.5").each do |t|
+parse("if else  if else () 4354 5 34 5.5").each do |t|
     puts t[0]
 end
 
