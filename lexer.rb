@@ -91,14 +91,8 @@ def parse(str)
 end
 
 #TODO: find out why it only finds 1 name and if else not
-parse("
-int a=5,b=10,d=rand(9, 10),c=rand(8,10)
-if(a!=b)
-	if(c==d)
-		A(B(C(3), 9), 5.5)
-		print(I2S(a+b+c+d));;
-
-").each do |t|
+testcode = File.open("demo.lexer"){ |file| file.readlines}.join ""
+parse(testcode).each do |t|
     puts t[0]
 end
 
