@@ -29,20 +29,20 @@ def parse(str)
 		when /\A#.*\n/
 		when /\A\d+\.\d+/, /\A\d+\./, /\A\.\d+/
 			q.push [:FLOAT, $&.to_f]
+		when /\A0x([a-fA-F0-9])+/
+			q.push [:INT, $&.hex]
+		when /\A0o([0-7])+/
+			q.push [:INT, $1.oct]
+		when /\A0b([01])+/
+			q.push [:INT, $1.bin]
 		when /\A\d+/
 			q.push [:INT, $&.to_i]
-		when /0x[a-fA-F0-9]+/
-			q.push [:INT, $&.hex]
-		when /0o([0-7])+/
-			q.push [:INT, $1.oct]
-		when /0b([01])+/
-			q.push [:INT, $1.bin]
 		when /\A[']([\x01-\x26\x29-\x5B\x5D-\x7F]
 		(	[\x01-\x26\x29-\x5B\x5D-\x7F][\x01-\x26\x29-\x5B\x5D-\x7F]
 			[\x01-\x26\x29-\x5B\x5D-\x7F])?)[']/x
 			q.push [:INT, $1.rawcode]
-		when /\A("[^"]")/ #TODO: fix me
-			q.push [:STRING, $1]
+		when /\A"[^"]"/ #TODO: fix me
+			q.push [:STRING, $&]
 		when /\Ascope/
 			q.push [:SCOPE, nil] #is nil needed?
 		when /\Afun/
@@ -73,11 +73,11 @@ def parse(str)
 			q.push [$&, $&]
 		when /^[+\-*\/()\[\],:=<>]/
 			q.push [$&, $&]
-		when /\A([a-zA-Z_?$%&§])([a-zA-Z0-9_?§$%&])*/
+		#when /\A([a-zA-Z_?$%&§])([a-zA-Z0-9_?§$%&])*/
+		#	q.push [:NAME, $&]
+		when /\A(::)?[a-zA-Z_?§$%&]([a-zA-Z0-9_?§$%&])*
+				(::[a-zA-Z_?§$%&]([a-zA-Z0-9_?§$%&])*)*/x
 			q.push [:NAME, $&]
-		#when /\A(::)?[a-zA-Z_?!]([a-zA-Z0-9_?!])*
-		#		(::[a-zA-Z_?!]([a-zA-Z0-9_?!])*)*/x
-		#	q.push [:IDENTIFER, $&]
 		when /\A;/
 			q.push [:END, nil]
 		when /^\n/
@@ -91,7 +91,14 @@ def parse(str)
 end
 
 #TODO: find out why it only finds 1 name and if else not
-parse("\nif(a!=b)").each do |t|
+parse("
+int a=5,b=10,d=rand(9, 10),c=rand(8,10)
+if(a!=b)
+	if(c==d)
+		A(B(C(3), 9), 5.5)
+		print(I2S(a+b+c+d));;
+
+").each do |t|
     puts t[0]
 end
 
