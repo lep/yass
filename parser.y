@@ -66,6 +66,9 @@ rule
 				|	set
 				|	var_definition
 				|	EXITWHEN expression
+				|	IF expression
+				|	ELSEIF expression
+				|	ELSE
 
 	line		:	line_word EOL
 				|	line_word end_scope
