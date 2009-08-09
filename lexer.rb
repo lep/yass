@@ -78,10 +78,12 @@ def parse(str)
 		when /\A(::)?[a-zA-Z_?§$%&]([a-zA-Z0-9_?§$%&])*
 				(::[a-zA-Z_?§$%&]([a-zA-Z0-9_?§$%&])*)*/x
 			q.push [:NAME, $&]
+			puts $&
 		when /\A;/
 			q.push [:END, nil]
 		when /^\n/
 			q.push [:EOL, nil]
+			puts "EOL "+$&+":"
 		else
 			raise "Unknown character "
 		end
@@ -91,14 +93,7 @@ def parse(str)
 end
 
 #TODO: find out why it only finds 1 name and if else not
-parse("
-int a=5,b=10,d=rand(9, 10),c=rand(8,10)
-if(a!=b)
-	if(c==d)
-		A(B(C(3), 9), 5.5)
-		print(I2S(a+b+c+d));;
-
-").each do |t|
+parse("a.?()").each do |t|
     puts t[0]
 end
 
