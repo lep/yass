@@ -1,7 +1,7 @@
 class YassParser
 rule
 
-	literal		:	INT
+	literal		:	INT 
 				|	FLOAT
 				|	STRING
 
