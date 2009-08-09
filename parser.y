@@ -39,13 +39,12 @@ rule
 				|	expression "," arg_list
 
 	variable	:	IDENTIFER
-				|	NAME
 
 	set			:	variable var_assignment
 
 	var_assignment:	"=" expression
 
-	scope		:	SCOPE NAME
+	scope		:	SCOPE IDENTIFER
 
 	name_list	:	/*nothing*/
 				|	"," NAME

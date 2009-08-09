@@ -1,9 +1,20 @@
+$inLine = false
+$inFunction = false
+
+#checkVariable
+def cV(token)
+	if token.class == Literal and token.type == :NAME
+		$varManager[token.value]
+	end
+	return token
+end
+
 class Binary
   attr_accessor :op, :left, :right
   
   def initialize(left, op, right)
-    @left = left
-    @right = right
+    @left = cV left
+    @right = cV right
     @op = op
   end
   
@@ -12,12 +23,89 @@ class Binary
   end
 end
 
+class Braces
+	attr_accessor :content
+
+	def initialize(content)
+		@content = cV content
+	end
+
+	def repr
+		return "( #{@content.repr})"
+	end
+end
+
+class ArrayGet
+	attr_accessor :variable, :index
+
+	def initialize(variable, index)
+		@variable = cV variable
+		@index = cV index
+	end
+
+	def repr
+		return "#{@variable.repr}[#{@index.repr}]"
+	end
+end
+
+class Call
+	attr_accessor :name, :arglist
+
+	def initialize(name, arglist)
+		@name = name
+		@arglist = arglist.each do |t|
+			cV t #good code
+		end
+		
+	end
+
+	def repr
+		i = $inLine
+		$inLine = true
+		#for testing
+		args = @arglist.map{|t| t.repr}.join ","
+		#arg = @arglist.join ","
+		if not i
+			#TODO: fixme
+			return "call #{@name.repr}(#{args})"
+			$inLine = false
+		else
+			return "#{@name.repr}(#{args})"
+		end
+	end
+end
+
+class VariableAssignment
+	attr_accessor :name, :content
+
+	def initialize(name, content)
+		@name = cV name
+		@content = cV content
+	end
+
+	def repr
+		return "set #{@name.repr} = #{@content.repr}"
+	end
+end
+
+class Literal
+	attr_accessor :type, :value
+	def initialize(type, value)
+		@type = type
+		@value = value
+	end
+
+	def repr
+		return "#{@value}"
+	end
+end
+
 class Unary
   attr_accessor :op, :right
   
   def initialize(op, right)
     @op = op
-    @right = right
+    @right = cV right
   end
   
   def repr
@@ -26,11 +114,12 @@ class Unary
 end
   
 class Variable
-  attr :type, :name
+  attr_accessor :type, :name
   
   def initialize(type, name)
     @type = type
     @name = name
+	$varManager.newVariable(self)
   end
   
   def repr
@@ -38,8 +127,9 @@ class Variable
   end
 end
 
+
 class VariableLayer
-  attr :vars
+  attr_accessor :vars
 
   def initialize
     @vars = {}
@@ -55,7 +145,7 @@ class VariableLayer
 end
 
 class VariableManager
-  attr :stack
+  attr_accessor :stack
   
   def initialize
     @stack = [VariableLayer.new]
@@ -75,20 +165,25 @@ class VariableManager
         return t[index]
       end
     end
-    raise "Unkown Variable"
+    raise "Unkown Variable #{@index}"
   end
   
-  def newVariable(type, name)
-    @stack[-1][name] = Variable.new(type, name)
+  def newVariable(var)
+    @stack[-1][var.name] = var
   end
 end
 
+$varManager = VariableManager.new
 
-v = VariableManager.new
-v.newVariable "int", "xyz"
-v.scope
-v.newVariable("int", "abc")
-v["abc"]
-v["xyz"]
-v.endscope
-v["abc"]
+Variable.new("int", "abc").repr
+puts Call.new(Literal.new(:NAME, "BJDebugMsg"), [Literal.new(:NAME, "abc"), Call.new(Literal.new(:NAME, "I2S"), [Literal.new(:INT, 5)])]).repr
+
+
+#v = VariableManager.new
+#v.newVariable "int", "xyz"
+#v.scope
+#v.newVariable("int", "abc")
+#v["abc"]
+#v["xyz"]
+#v.endscope
+#v["abc"]
