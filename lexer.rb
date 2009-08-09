@@ -93,7 +93,12 @@ def parse(str)
 end
 
 #TODO: find out why it only finds 1 name and if else not
+<<<<<<< HEAD:lexer.rb
 parse("a.?()").each do |t|
+=======
+testcode = File.open("demo.lexer"){ |file| file.readlines}.join ""
+parse(testcode).each do |t|
+>>>>>>> dac95522aa4f984c4ee42eadc68dfab555777df6:lexer.rb
     puts t[0]
 end
 
