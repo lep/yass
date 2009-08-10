@@ -41,6 +41,7 @@ rule
 	variable	:	IDENTIFER
 
 	set			:	variable var_assignment
+				|	variable "[" expression "]" var_assignment
 
 	var_assignment:	"=" expression
 
@@ -87,7 +88,6 @@ rule
 	var_definition:	variable var_decl_assign
 				|	variable var_decl_assign var_decl_assign_list
 
-	#TODO: fix this
 	end_scope	:	END
 				|	END end_scope
 				|	END EOL
